@@ -1,0 +1,23 @@
+{
+  "name": "project-4-comicrec",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nealado/project-4-comicrec.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nealado/project-4-comicrec/issues"
+  },
+  "homepage": "https://github.com/nealado/project-4-comicrec#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "react": "^0.14.0"
+  }
+}
