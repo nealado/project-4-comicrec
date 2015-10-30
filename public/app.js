@@ -1,5 +1,32 @@
 const {Router, Route, Link} = ReactRouter;
 
+var parameters = [];
+var match = []
+var questions = [{ name: "genre",
+                 blurb: "What genres do you like?",
+                 values: [
+                     {label: "Fantasy", value: "fantasy"},
+                     {label: "Romance", value: "romance"},
+                     {label: "Western", value: "western"}
+                 ]
+                },
+                { name: "age",
+                blurb: "What Age would you like?",
+                 values: [
+                     {label: "YA", value: "ya"},
+                     {label: "pg-13", value: "pg13"},
+                     {label: "M", value: "m"},
+
+                 ]
+                },
+              ];
+
+var comicDB = [
+  {id: 1, name: 'Saga', genre: ['science fiction', 'romance'], age: 'M'},
+  {id: 2, name: 'Pretty Deadly', genre: ['fantasy', 'western']}
+];
+
+
 const App = React.createClass({
   render: function() {
       return (
@@ -15,7 +42,6 @@ const App = React.createClass({
       );
   }
 });
-
 
 const Quiz = React.createClass({
   render: function(){
@@ -127,19 +153,16 @@ var SurveyApp = React.createClass({
         var elementCheckToUpdate = newStateQuestions[questionIndex].values[elementIndex];
         if(checked) {
             elementCheckToUpdate.checked = true
-            console.log(elementIndex)
             parameters.push(elementCheckToUpdate.value);
             var indexPushed = parameters.indexOf(elementCheckToUpdate)
-            console.log('element just pushed in at', indexPushed)
-            console.log('before', parameters)
+            console.log('User has selected: ', parameters)
         }
         else {
             if(typeof elementCheckToUpdate.checked !== undefined) {
               var indexUncheck = parameters.indexOf(elementCheckToUpdate.value)
-              console.log(indexUncheck+" "+elementCheckToUpdate.value)
               parameters.splice(indexUncheck, 1);
               delete elementCheckToUpdate.checked;
-              console.log("after ", parameters)
+              console.log('User has selected: ', parameters)
 
             }
         }
@@ -147,26 +170,6 @@ var SurveyApp = React.createClass({
     }
 });
 
-var parameters = [];
-
-var questions = [{ name: "genre",
-                 blurb: "What genres do you like?",
-                 values: [
-                     {label: "Fantasy", value: "fantasy"},
-                     {label: "Romance", value: "romance"},
-                     {label: "Western", value: "western"}
-                 ]
-                },
-                { name: "age",
-                blurb: "What Age would you like?",
-                 values: [
-                     {label: "YA", value: "ya"},
-                     {label: "pg-13", value: "pg13"},
-                     {label: "M", value: "m"},
-
-                 ]
-                },
-              ];
 
 
 const ComicsList = React.createClass({
@@ -175,13 +178,14 @@ const ComicsList = React.createClass({
   },
 
   componentDidMount: function() {
-    $.get("/Comics", function(result) {
-      if (this.isMounted()) {
-        this.setState({
-          data: result
-        });
-      }
-    }.bind(this));
+    $.ajax({
+      url: "/comics",
+      method: "GET",
+      success: function(result) {
+        console.log("Result: ", result);
+        this.setState({data: result});
+      }.bind(this)
+    });
   },
 
   render: function() {
@@ -216,38 +220,47 @@ const Comic = React.createClass({
   }
 });
 
-/*const ComicInfo = React.createClass({
+/* Show selected comic's detailed info */
+const ComicInfo = React.createClass({
+
   getInitialState: function() {
-    return {comic: {}};
+    return {comic: null};
+  },
+
+  loadComicsData: function () {
+    $.ajax({
+      url: 'http://www.comicvine.com/api/issue/4000-360829/?api_key=&format=jsonp&json_callback=?',
+      method: 'GET',
+      dataType: 'jsonp',
+      success: function(result) {
+            this.setState({comic: result});
+        }.bind(this)
+    });
   },
 
   componentDidMount: function() {
-    $.ajax({
-      url: 'www.comicvine.com/api'
-      method: 'GET',
-      data: {name: this.props.params.title},
-      success: function(result) {
-        this.setState({comic: result});
-      }.bind(this)
-    });
+    this.loadComicsData();
   },
-www.comicvine.com/api/series/?api_key=&filter=name:Saga.json
-  render: function(){
-    <div>
-      <h3>{this.state.?.name}</h3>
-      <img src="{this.state.?.image}"></img>
-      <p>{this.state.?.description}</p>
-    </div>
+
+  render: function() {
+    var content = this.state.comic ? <div><p>{this.state.comic.results.description}</p><img src="{this.state.comic.results.image.medium_url}"></img></div> : <h2>"Sorry!"</h2>;
+      return (
+        <div>
+          {content}
+        </div>
+      );
   }
-}) */
+}); /* Comic Info Detail Ends
+  <p>{this.state.comic.results.description}</p> */
+
 
 React.render((
   <Router>
     <Route path="/" component={App}>
         <Route path="/Quiz" component={Quiz}></Route>
+        <Route path="/ComicsList/:title" component={ComicInfo}>
+        </Route>
         <Route path="/ComicsList" component={ComicsList}>
-          <Route path="/ComicsList/:title" component={Comic}>
-          </Route>
         </Route>
     </Route>
   </Router>
