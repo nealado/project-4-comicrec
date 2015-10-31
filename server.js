@@ -26,12 +26,24 @@ MongoClient.connect(url, function(err, db) {
   if (err) {console.log("Couldn't connect to database")}
 
   app.get('/comics', function(req, res) {
-    var comics = db.collection('reccs').find({}).toArray(function(error, comics) {
+    var query = req.query.test
+    var comics = db.collection('reccs').find( { genre: { $in: req.query.test} } ).toArray(function(error, comics) {
       if (error) {console.dir(error+"error!")}
       console.dir("hello?")
+      console.log("What's being sent by req: ",req.query.test)
+      console.log("What's being sent by comics: ",comics)
+
       res.send(comics)
       // console.dir(comics);
     })
+  })
+
+  app.get('/comic', function(req, res) {
+    var comic = db.collection('reccs').findOne( { name: { $in: [req.query.title]} }, function(err, comic) {
+      if (err) {console.dir(err+"error!")}
+      console.log("What's being sent by res: ",comic.url);
+      res.send(comic.url)
+    });
   })
 
   // findComics(db, function() {
