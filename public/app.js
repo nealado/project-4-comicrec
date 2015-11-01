@@ -22,7 +22,6 @@ var questions = [{ name: "genre",
                 },*/
               ];
 var divStyle = {
-  background: "#eee",
   padding: "20px",
   margin: "20px"
 }
