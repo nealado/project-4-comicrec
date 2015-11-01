@@ -239,6 +239,7 @@ const ComicsList = React.createClass({
   }
 });
 
+
 /* Each Comic represents each element in the filtered ComicsList*/
 const Comic = React.createClass({
   render: function() {
@@ -290,12 +291,13 @@ const ComicInfo = React.createClass({
       this.loadComicData()
   },
 
+
   render: function() {
   var content = this.state.id && this.state.comic ?
     <div className="container-fluid">
       <div className="row">
         <div className="col-xs-6">
-          <img className="img-responsive" src={this.state.comic.results.image.medium_url}></img>
+          <img className="img-responsive" src={"http://static.comicvine.com" + this.state.comic.results.image.medium_url}></img>
         </div>
         <div className="col-xs-6">
           <p>{$(this.state.comic.results.description).text().substring(0,1000)}<a href="#">...Read More</a></p>
