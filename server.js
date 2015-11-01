@@ -1,6 +1,8 @@
 var express = require('express');
+var sassMiddleware = require('node-sass-middleware');
 var bodyParser = require('body-parser');
 var path = require('path')
+
 
 var app = express();
 
@@ -58,6 +60,15 @@ var comicDB = [
 
 app.use(bodyParser.urlencoded({ extend: false}));
 app.use(bodyParser.json());
+
+app.use(sassMiddleware({
+    /* Options */
+    src: __dirname,
+    dest: path.join(__dirname, 'public'),
+    debug: true,
+    outputStyle: 'compressed',
+    prefix:  '/prefix'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+}));
 
 app.set('port', (process.env.PORT || 5000));
 app.use('/', express.static(path.join(__dirname, 'public')));

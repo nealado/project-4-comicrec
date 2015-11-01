@@ -21,12 +21,17 @@ var questions = [{ name: "genre",
                  ]
                 },*/
               ];
+var divStyle = {
+  background: "#eee",
+  padding: "20px",
+  margin: "20px"
+}
 
 const App = React.createClass({
   render: function() {
       return (
-        <div className="container">
-          <Link to="/"><h1 className="text-center">Comic Rec!</h1></Link>
+        <div style={divStyle} className="container">
+          <Link to="/"><h1 className="text-center">×Comic Rec×</h1></Link>
 
           <div className="container-fluid">
               <Quiz url="/comics"/>
