@@ -3,7 +3,7 @@ const {Router, Route, Link} = ReactRouter;
 var parameters = [];
 var match = []
 var questions = [{ name: "genre",
-                 blurb: "What genres do you like?",
+                 blurb: "What genres do you like to read?",
                  values: [
                      {label: "Fantasy", value: "fantasy"},
                      {label: "Romance", value: "romance"},
@@ -26,12 +26,12 @@ const App = React.createClass({
   render: function() {
       return (
         <div className="container">
-          <h1>Comic Rec: cuz comics r hard</h1>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/ComicsList">Comics</Link></li>
-          </ul>
-          <Quiz url="/comics"/>
+          <Link to="/"><h1 className="text-center">Comic Rec!</h1></Link>
+
+          <div className="container-fluid">
+              <Quiz url="/comics"/>
+          </div>
+
           {this.props.children}
         </div>
       );
@@ -64,7 +64,7 @@ const Quiz = React.createClass({
   },
   render: function(){
       return (
-        <div className="container">
+        <div>
           <SurveyApp questions={questions} handleSurveySubmit={this.handleSurveySubmit}/>
         </div>
 
@@ -75,14 +75,16 @@ const Quiz = React.createClass({
 var CheckboxInput = React.createClass({
   render: function () {
     return (
-        <label>
-            <input type="checkbox"
-              name={this.props.name}
-              checked={this.props.checked}
-              onClick={this.handleChange}
-              value={this.props.value} />
-              {this.props.label}
-      </label>
+      <div className="checkbox">
+          <label>
+              <input type="checkbox"
+                name={this.props.name}
+                checked={this.props.checked}
+                onClick={this.handleChange}
+                value={this.props.value} />
+                {this.props.label}
+        </label>
+      </div>
     );
   },
   handleChange: function(e) {
@@ -196,10 +198,9 @@ var SurveyApp = React.createClass({
                 </form>
         }
         return (
-          <div>
+          <div className="container-fluid">
             {content}
           </div>
-  /* On Click, render Comics List  */
         )
     }
 });
@@ -226,11 +227,9 @@ const ComicsList = React.createClass({
       return <Comic info={comic}/>;
     });
     return (
-      <div>
-        <h2>Recommended Comics</h2>
-          <ul>
-            <li> {comicNodes} </li>
-          </ul>
+      <div className="container-fluid">
+        <h2 className="text-center">Try one of these...</h2>
+            {comicNodes}
       </div>
     );
   }
@@ -243,13 +242,13 @@ const Comic = React.createClass({
     let comicPath = '/ComicsList/'+titleParam;
 
     return (
-      <li>
+      <div className="col-xs-6 col-md-4">
         <Link to={comicPath}>
           <h3>{this.props.info.name}</h3>
-          <img src="https://placekitten.com/g/350/150"></img>
+          <img className="img-responsive" src="https://placekitten.com/g/350/150"></img>
         </Link>
         <p> Description of the comic shortened here...</p>
-      </li>
+      </div>
     )
   }
 });
@@ -271,7 +270,7 @@ const ComicInfo = React.createClass({
           this.setState({id: result});
           console.log("LoadComicID State: ",this.state.id)
           $.ajax({
-            url: result+'?api_key=APIKEY&format=jsonp&json_callback=?',
+            url: result+'?api_key=5274bd58ebf48aedf46d7a1aa08c6ee8b9127c3f&format=jsonp&json_callback=?',
             method: 'GET',
             dataType: 'jsonp',
             success: function(result) {
@@ -288,9 +287,19 @@ const ComicInfo = React.createClass({
   },
 
   render: function() {
-  var content = this.state.id && this.state.comic ? <div><p>{$(this.state.comic.results.description).text()}</p><img src={this.state.comic.results.image.medium_url}></img></div> : <h2>"Sorry!"</h2>;
+  var content = this.state.id && this.state.comic ?
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-xs-6">
+          <img className="img-responsive" src={this.state.comic.results.image.medium_url}></img>
+        </div>
+        <div className="col-xs-6">
+          <p>{$(this.state.comic.results.description).text().substring(0,1000)}<a href="#">...Read More</a></p>
+        </div>
+      </div>
+    </div> : <h2>"Sorry!"</h2>;
       return (
-        <div>
+        <div className="container">
           {content}
         </div>
       );

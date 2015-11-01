@@ -7,7 +7,7 @@ var app = express();
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-var url = 'mongodb://localhost:27017/comics';
+var uri = process.env.TEST_MONGODB;
 
 
 var findComics = function(db, callback) {
@@ -22,7 +22,7 @@ var findComics = function(db, callback) {
    });
 };
 
-MongoClient.connect(url, function(err, db) {
+MongoClient.connect(uri, function(err, db) {
   if (err) {console.log("Couldn't connect to database")}
 
   app.get('/comics', function(req, res) {
