@@ -59,7 +59,7 @@ var comicDB = [
 app.use(bodyParser.urlencoded({ extend: false}));
 app.use(bodyParser.json());
 
-app.set('port', 3000);
+app.set('port', (process.env.PORT || 5000));
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 
