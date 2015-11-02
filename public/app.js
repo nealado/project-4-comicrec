@@ -8,7 +8,13 @@ var questions = [{ name: "genre",
                      {label: "Fantasy", value: "fantasy"},
                      {label: "Romance", value: "romance"},
                      {label: "Horror", value: "horror"},
-                     {label: "Action", value: "action"}
+                     {label: "Action", value: "action"},
+                     {label: "Science Fiction", value: "science fiction"},
+                     {label: "Comedy", value: "comedy"},
+                     {label: "Mystery", value: "mystery"},
+                     {label: "Kid Friendly", value: "kid friendly"},
+                     {label: "LGBT", value: "lgbt"},
+                     {label: "Superhero", value: "superhero"}
                  ]
                 }/*,
                 { name: "age",
@@ -29,10 +35,10 @@ var divStyle = {
 const App = React.createClass({
   render: function() {
       return (
-        <div style={divStyle} className="container">
+        <div>
           <Link to="/"><h1 className="text-center">×Comic Rec×</h1></Link>
 
-          <div className="container-fluid">
+          <div>
               <Quiz url="/comics"/>
           </div>
 
@@ -192,6 +198,7 @@ var SurveyApp = React.createClass({
           content =  <ComicsList query={this.state.parameters}/>
         } else {
           content =
+          <div className="container">
                 <form action="" onSubmit={this.handleSubmit}>
                   <CheckboxInputFields
                     questions={this.state.questions}
@@ -200,9 +207,10 @@ var SurveyApp = React.createClass({
                   <br></br>
                   <input className="btn btn-default" type="submit"></input>
                 </form>
+                </div>
         }
         return (
-          <div className="container-fluid">
+          <div>
             {content}
           </div>
         )
@@ -231,14 +239,13 @@ const ComicsList = React.createClass({
       return <Comic info={comic}/>;
     });
     return (
-      <div className="container-fluid">
-        <h2 className="text-center">Try one of these...</h2>
+      <div>
+        <h2>Here are my suggestions ↯:</h2>
             {comicNodes}
       </div>
     );
   }
 });
-
 
 /* Each Comic represents each element in the filtered ComicsList*/
 const Comic = React.createClass({
@@ -247,17 +254,67 @@ const Comic = React.createClass({
     let comicPath = '/ComicsList/'+titleParam;
 
     return (
-      <div className="col-xs-6 col-md-4">
+      <div className="col-md-6">
         <Link to={comicPath}>
-          <h3>{this.props.info.name}</h3>
-          <img className="img-responsive" src="https://placekitten.com/g/350/150"></img>
+          <ComicPreview title={this.props.info.name} url={comicPath}/>
         </Link>
-        <p> Description of the comic shortened here...</p>
       </div>
     )
   }
 });
 
+var divStyleBox = {
+  "height": "600px",
+  "margin" : "10px"
+}
+
+var imgPreview = {
+}
+
+const ComicPreview = React.createClass({
+  getInitialState: function() {
+    return {comic: null, id: null};
+  },
+
+  loadComicData: function() {
+      $.ajax({
+        url: '/comic',
+        method: 'GET',
+        data: {"title": this.props.title},
+        success: function(result) {
+          console.log("Ajax Request for ID: ", result);
+          this.setState({id: result});
+          console.log("LoadComicID State: ",this.state.id)
+          $.ajax({
+            url: result+'?api_key=5274bd58ebf48aedf46d7a1aa08c6ee8b9127c3f&format=jsonp&json_callback=?',
+            method: 'GET',
+            dataType: 'jsonp',
+            success: function(result) {
+                  this.setState({comic: result});
+                  console.log("Successful 2nd Ajax!",result);
+              }.bind(this)
+          })
+        }.bind(this)
+      })
+  },
+
+  componentDidMount: function() {
+      this.loadComicData()
+  },
+
+  render: function() {
+    var content = this.state.id && this.state.comic ?
+          <div style = {divStyleBox}>
+            <img style={imgPreview} className="img-responsive center block" src={"http://static.comicvine.com" + this.state.comic.results.image.small_url}></img>
+          </div>
+    : <h2>"Sorry!"</h2>;
+    return (
+      <div className="container">
+        {content}
+      </div>
+    );
+}
+});
 /* Show selected Comic component's detailed info */
 const ComicInfo = React.createClass({
 
@@ -291,35 +348,25 @@ const ComicInfo = React.createClass({
       this.loadComicData()
   },
 
-
   render: function() {
-  var content = this.state.id && this.state.comic ?
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-xs-6">
-          <img className="img-responsive" src={"http://static.comicvine.com" + this.state.comic.results.image.medium_url}></img>
+    var content = this.state.id && this.state.comic ?
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-xs-6">
+            <img className="img-responsive" src={"http://static.comicvine.com" + this.state.comic.results.image.medium_url}></img>
+          </div>
+          <div className="col-xs-6">
+            <p>{$(this.state.comic.results.description).text().substring(0,1000)}<a href="#">...Read More</a></p>
+          </div>
         </div>
-        <div className="col-xs-6">
-          <p>{$(this.state.comic.results.description).text().substring(0,1000)}<a href="#">...Read More</a></p>
-        </div>
-      </div>
-    </div> : <h2>"Sorry!"</h2>;
-      return (
-        <div className="container">
-          {content}
-        </div>
-      );
+      </div> : <h2>"Sorry!"</h2>;
+        return (
+          <div className="container">
+            {content}
+          </div>
+        );
   }
-}); /* Comic Info Detail Ends
-
-/*const ComicContent = React.createClass({
-  render: function() {
-    return (
-
-    )
-  }
-})*/
-
+}); /* Comic Info Detail Ends */
 
 React.render((
   <Router>

@@ -70,7 +70,7 @@
   },
  {
     name: 'Hawkeye',
-    genre: ['superhero', 'humor'],
+    genre: ['superhero', 'comedy'],
     url: 'https://www.comicvine.com/api/issue/4000-348048/'
   },
  {
@@ -107,11 +107,6 @@
     name: 'Gotham Academy',
     genre: ['kid friendly', 'superhero'],
     url: 'https://www.comicvine.com/api/issue/4000-466984/'
-  },
- {
-    name: 'American Vampire',
-    genre: ['horror', 'fantasy'],
-    url: 'https://www.comicvine.com/api/issue/4000-201042/'
   },
  {
     name: 'Black Canary',
