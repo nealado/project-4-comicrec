@@ -240,7 +240,7 @@ const ComicsList = React.createClass({
     });
     return (
       <div>
-        <h2>Here are my suggestions ↯:</h2>
+        <h2 className="text-center">suggested↯reading</h2>
             {comicNodes}
       </div>
     );
@@ -254,7 +254,7 @@ const Comic = React.createClass({
     let comicPath = '/ComicsList/'+titleParam;
 
     return (
-      <div className="col-md-6">
+      <div>
         <Link to={comicPath}>
           <ComicPreview title={this.props.info.name} url={comicPath}/>
         </Link>
@@ -265,10 +265,12 @@ const Comic = React.createClass({
 
 var divStyleBox = {
   "height": "600px",
-  "margin" : "10px"
+  "margin" : "10px",
+  "background-color" : "#eee"
 }
 
 var imgPreview = {
+  "maxWidth" : "320px"
 }
 
 const ComicPreview = React.createClass({
@@ -304,12 +306,18 @@ const ComicPreview = React.createClass({
 
   render: function() {
     var content = this.state.id && this.state.comic ?
-          <div style = {divStyleBox}>
-            <img style={imgPreview} className="img-responsive center block" src={"http://static.comicvine.com" + this.state.comic.results.image.small_url}></img>
-          </div>
+          <div className="row" style = {divStyleBox}>
+            <div className="col-sm-6">
+              <img style={imgPreview} className="img-responsive center block" src={"http://static.comicvine.com" + this.state.comic.results.image.small_url}></img>
+            </div>
+            <div className="col-sm-6">
+              <h2><strong>{this.props.title}</strong></h2>
+              <p><em>Description:</em> {$(this.state.comic.results.description).text().substring(0,400)} </p>
+            </div>
+        </div>
     : <h2>"Sorry!"</h2>;
     return (
-      <div className="container">
+      <div className="col-md-6">
         {content}
       </div>
     );

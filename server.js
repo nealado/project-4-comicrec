@@ -17,15 +17,14 @@ MongoClient.connect(uri, function(err, db) {
   // Provides title + genre to fill in relevant ComicsList component, depending on user's selected checkboxes, represented in query variable
   app.get('/comics', function(req, res) {
     var query = req.query.test;
-    var randomNumber = Math.floor((Math.random() * 5) + 1)
+    var randomNumber = Math.floor((Math.random() * 3) + 1)
 
     //Not working -- randomly select the number to skip by in Mongo query, by counting the number that already exist in callback function.
 
         // var countComics = db.collection('reccs').count({ genre: { $in: req.query.test}}, function(error, count) {
         //   console.log(count)
         // })
-        //
-        // var numRecordsToSkip = Math.round(Math.random() * countComics(), 0)
+
         // var collection = db.collection('reccs');
 
     // Temporary solution using a random number 1 through 5.
