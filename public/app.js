@@ -51,7 +51,7 @@ var divStyleSurveyFont = {
 }
 
 var divStyleSurveyQuestion = {
-  "font-size" : "1.5em",
+  "font-size" : "1.5em"
 }
 
 const App = React.createClass({
