@@ -32,6 +32,28 @@ var divStyle = {
   margin: "20px"
 }
 
+var divStyleBox = {
+  "height": "500px",
+  "margin" : "10px",
+  "background-color" : "#eee"
+}
+
+var imgPreview = {
+  "maxWidth" : "300px",
+  "display": "inline-block",
+   "vertical-align": "middle",
+   "float": "none",
+   "margin-top" : "10px"
+}
+
+var divStyleSurveyFont = {
+  "font-size": "20px"
+}
+
+var divStyleSurveyQuestion = {
+  "font-size" : "1.5em",
+}
+
 const App = React.createClass({
   render: function() {
       return (
@@ -82,10 +104,12 @@ const Quiz = React.createClass({
   }
 });
 
+/* Code for the Checkbox inputs is largely from this tutorial:  */
+
 var CheckboxInput = React.createClass({
   render: function () {
     return (
-      <div className="checkbox">
+      <div style={divStyleSurveyFont} className="checkbox">
           <label>
               <input type="checkbox"
                 name={this.props.name}
@@ -121,8 +145,8 @@ var CheckboxInputField = React.createClass({
             );
         });
         return (
-            <div className="inputFieldWrapper">
-                <p>{this.props.question.blurb}</p>
+            <div style={divStyleSurveyFont} className="inputFieldWrapper">
+                <h3><strong>{this.props.question.blurb}</strong></h3>
                 {mappedInputElements}
             </div>
         );
@@ -149,7 +173,7 @@ var CheckboxInputFields = React.createClass({
             );
         });
         return (
-            <div>
+            <div style={divStyleSurveyFont}>
                 {mappedInputFields}
             </div>
         );
@@ -162,10 +186,6 @@ var SurveyApp = React.createClass({
         return {questions: questions, parameters: [], clicked: false};
     },
     handleFieldChange: function(questionIndex, elementIndex, checked) {
-        // Update the state data.  If the element has been checked, then change the element's
-        // corresponding data point's checked property to true.  (This will add the checked
-        // property to that data point if it doesn't already exist.)  If the element has been
-        // unchecked, then we'll delete that data point's checked element it it exists.
 
         var newStateQuestions = this.state.questions.slice();
         var elementCheckToUpdate = newStateQuestions[questionIndex].values[elementIndex];
@@ -198,14 +218,14 @@ var SurveyApp = React.createClass({
           content =  <ComicsList query={this.state.parameters}/>
         } else {
           content =
-          <div className="container">
+          <div style={divStyleSurveyFont} className="container">
                 <form action="" onSubmit={this.handleSubmit}>
                   <CheckboxInputFields
                     questions={this.state.questions}
                     handleFieldChange={this.handleFieldChange}
                     parameters={this.state.parameters} />
                   <br></br>
-                  <input className="btn btn-default" type="submit"></input>
+                  <input className="btn btn-default btn-lg" type="submit"></input>
                 </form>
                 </div>
         }
@@ -247,7 +267,6 @@ const ComicsList = React.createClass({
   }
 });
 
-/* Each Comic represents each element in the filtered ComicsList*/
 const Comic = React.createClass({
   render: function() {
     var titleParam = this.props.info.name.replace(/\s/g, '+');
@@ -255,24 +274,13 @@ const Comic = React.createClass({
 
     return (
       <div>
-        <Link to={comicPath}>
           <ComicPreview title={this.props.info.name} url={comicPath}/>
-        </Link>
       </div>
     )
   }
 });
 
-var divStyleBox = {
-  "height": "600px",
-  "margin" : "10px",
-  "background-color" : "#eee"
-}
-
-var imgPreview = {
-  "maxWidth" : "320px"
-}
-
+/* Populates the content on the recommended list of comics.  */
 const ComicPreview = React.createClass({
   getInitialState: function() {
     return {comic: null, id: null};
@@ -311,8 +319,10 @@ const ComicPreview = React.createClass({
               <img style={imgPreview} className="img-responsive center block" src={"http://static.comicvine.com" + this.state.comic.results.image.small_url}></img>
             </div>
             <div className="col-sm-6">
-              <h2><strong>{this.props.title}</strong></h2>
-              <p><em>Description:</em> {$(this.state.comic.results.description).text().substring(0,400)} </p>
+              <Link to={this.props.url}>
+                <h2><strong>{this.props.title}</strong></h2>
+              </Link>
+              <p> {$(this.state.comic.results.description).text().substring(0,400)}<Link to={this.props.url}>...Read More</Link> </p>
             </div>
         </div>
     : <h2>"Sorry!"</h2>;
@@ -364,7 +374,7 @@ const ComicInfo = React.createClass({
             <img className="img-responsive" src={"http://static.comicvine.com" + this.state.comic.results.image.medium_url}></img>
           </div>
           <div className="col-xs-6">
-            <p>{$(this.state.comic.results.description).text().substring(0,1000)}<a href="#">...Read More</a></p>
+            <p>{$(this.state.comic.results.description).text().substring(0,1500)}<a href={this.state.comic.results.site_detail_url}>...Read More</a></p>
           </div>
         </div>
       </div> : <h2>"Sorry!"</h2>;
